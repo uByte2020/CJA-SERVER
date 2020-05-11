@@ -40,6 +40,22 @@ const userSchema = new mongoose.Schema({
     trim: true,
     default: 'default.jpg'
   },
+  dataNascimento: {
+    type: Date,
+    default: null
+  },
+  actividade: {
+    type: String,
+    default: null
+  },
+  sectorActividade: {
+    type: String,
+    default: null
+  },
+  nif: {
+    type: String,
+    default: null
+  },
   role: {
     type: Object,
     required: true
@@ -55,7 +71,6 @@ const userSchema = new mongoose.Schema({
     trim: true,
     required: [true, 'Please confirm a password'],
     validate: {
-      //This only works on SAVE and CREATE
       validator: function(el) {
         return el === this.password;
       },
@@ -84,12 +99,13 @@ const userSchema = new mongoose.Schema({
   }
 });
 
+//Query Middleware
 userSchema.pre(/^find/, function(next) {
-  // In Query Middleware, 'this' reference to query befere be executed
   this.find({ active: { $ne: false } });
   next();
 });
 
+// Document Middleware
 userSchema.pre('save', async function(next) {
   // eslint-disable-next-line no-restricted-globals
   if (!isNaN(this.role)) {
@@ -115,6 +131,7 @@ userSchema.pre('save', async function(next) {
   next();
 });
 
+// Methods
 userSchema.methods.correctPassword = async function(candidatePwd, userPdw) {
   return await bcrypt.compare(candidatePwd, userPdw);
 };

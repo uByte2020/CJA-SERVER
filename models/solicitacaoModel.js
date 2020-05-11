@@ -12,9 +12,9 @@ const solicitacaoSchema = new mongoose.Schema({
     type: Object,
     required: [true, 'Uma Solicitação deve ter uma Data']
   },
-  servico: {
+  seguro: {
     type: mongoose.Schema.ObjectId,
-    ref: 'servicos',
+    ref: 'seguros',
     required: [true, 'Uma Solicitação deve ter um serviço']
   },
   cliente: {
@@ -22,21 +22,32 @@ const solicitacaoSchema = new mongoose.Schema({
     ref: 'users',
     required: true
   },
+  mediador: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'users'
+  },
   createdAt: {
     type: Date,
     default: Date.now(),
     select: false
+  },
+  updatedAt: {
+    type: Date
+  },
+  validAt: {
+    type: Date
   }
 });
 
 solicitacaoSchema.pre('save', async function(next) {
   this.estado = await Estado.findOne({ estadoCode: { $eq: this.estado } });
   if (!this.estado) return next(new AppError(ErrorMessage[17].message, 500));
+  this.validAt = Date.now() + 365 * 24 * 3600 * 1000;
   next();
 });
 
 solicitacaoSchema.pre(/^find/, async function(next) {
-  this.populate({ path: 'cliente' }).populate({ path: 'servico' });
+  this.populate({ path: 'cliente' }).populate({ path: 'seguro' });
   next();
 });
 
