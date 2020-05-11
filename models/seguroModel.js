@@ -8,7 +8,9 @@ const ErrorMessage = require('./../utils/error');
 
 const seguroSchema = new mongoose.Schema({
   tipo: {
-    type: String
+    type: String,
+    required: true,
+    enum: ['Empresa', 'Particular']
   },
   modalidade: {
     type: Object,
@@ -57,8 +59,6 @@ const seguroSchema = new mongoose.Schema({
     type: Date
   }
 });
-
-seguroSchema.index({ location: '2dsphere' });
 
 seguroSchema.pre('save', async function(next) {
   this.seguradora = await seguradora.findById(this.seguradora);
