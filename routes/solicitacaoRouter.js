@@ -4,11 +4,6 @@ const authController = require('../controllers/authController');
 
 const router = express.Router({ mergeParams: true });
 
-router.get(
-  '/:fornecedoId/clientes',
-  solicitacaoController.getClientesByFornecedor
-);
-
 router.use(authController.protect);
 
 router

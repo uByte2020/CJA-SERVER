@@ -10,17 +10,10 @@ const cookieParser = require('cookie-parser');
 
 const userRouter = require('./routes/userRoutes');
 const profileRouter = require('./routes/profileRoutes');
-const categoryRouter = require('./routes/categoryRoutes');
 const stateRouter = require('./routes/stateRoutes');
-const packageRouter = require('./routes/packageRoutes');
-const serviceRouter = require('./routes/serviceRoutes');
+const seguroRouter = require('./routes/seguroRoutes');
 const solicitacaoRouter = require('./routes/solicitacaoRouter');
-const favoriteServiceRoutes = require('./routes/favoriteServiceRoutes');
-const planejamentoRoutes = require('./routes/planejamentoRoutes');
-const commentRoutes = require('./routes/commentRoutes');
-const subCategoryRoutes = require('./routes/subCategoryRoutes');
-const statisticRouter = require('./routes/statisticsRoutes');
-const logsRouter = require('./routes/logRoutes');
+// const logsRouter = require('./routes/logRoutes');
 const AppError = require('./utils/appError');
 const globalHandlerError = require('./controllers/errorController');
 
@@ -65,17 +58,10 @@ app.use((req, res, next) => {
 
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/perfils', profileRouter);
-app.use('/api/v1/categories', categoryRouter);
-app.use('/api/v1/subCategories', subCategoryRoutes);
 app.use('/api/v1/estados', stateRouter);
-app.use('/api/v1/packages', packageRouter);
-app.use('/api/v1/services', serviceRouter);
+app.use('/api/v1/seguros', seguroRouter);
 app.use('/api/v1/solicitacoes', solicitacaoRouter);
-app.use('/api/v1/favoriteServices', favoriteServiceRoutes);
-app.use('/api/v1/planejamentos', planejamentoRoutes);
-app.use('/api/v1/comments', commentRoutes);
-app.use('/api/v1/statistics', statisticRouter);
-app.use('/api/v1/logs', logsRouter);
+// app.use('/api/v1/logs', logsRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));

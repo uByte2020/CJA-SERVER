@@ -7,9 +7,10 @@ const catchAsync = require('../utils/catchAsync');
 const ErrorMessage = require('./../utils/error');
 
 const multerStorage = multer.memoryStorage();
-//TODO: Metodos Para Upload de Files
+
 const multerFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith('image')) cb(null, true);
+  if (file.mimetype.startsWith('image') || file.mimetype === 'application/pdf')
+    cb(null, true);
   else cb(new AppError(ErrorMessage[14].message, 400), false);
 };
 
@@ -18,54 +19,73 @@ const upload = multer({
   fileFilter: multerFilter
 });
 
-exports.uploadSeguroPhoto = upload.fields([
-  { name: 'coverImage', maxCount: 1 },
-  { name: 'images', maxCount: 10 }
+exports.uploadSeguroDocs = upload.fields([
+  { name: 'apolice', maxCount: 1 },
+  { name: 'comprovativos', maxCount: 3 },
+  { name: 'docIdentificacaos', maxCount: 10 }
 ]);
 
-exports.resizeSeguroPhoto = catchAsync(async (req, res, next) => {
-  if (!req.files) return next();
+const resizeOne = async (image, type) => {
+  if (image.mimetype.startsWith('image')) {
+    const imageName = `seguro-${type}-${Date.now()}.jpeg`;
 
-  if (req.files.coverImage) {
-    req.body.coverImage = `seguro-${req.params.id}-${Date.now()}-cover.jpeg`;
-
-    await sharp(req.files.coverImage[0].buffer)
+    await sharp(image.buffer)
       .resize(2000, 1333)
       .toFormat('jpeg')
       .jpeg({ quality: 90 })
-      .toFile(`public/img/seguros/${req.body.coverImage}`);
+      .toFile(`public/img/seguros/${type}/${imageName}`);
+    return imageName;
   }
+};
 
-  if (req.files.images) {
-    req.body.images = [];
+const resizeMany = async (images, type) => {
+  const imageNames = [];
 
-    await Promise.all(
-      req.files.images.map(async (file, i) => {
-        const filename = `seguro-${req.params.id}-${Date.now()}-${i}.jpeg`;
+  await Promise.all(
+    images.map(async (file, i) => {
+      if (file.mimetype.startsWith('image')) {
+        const filename = `seguro-${type}-${Date.now()}-${i}.jpeg`;
 
         await sharp(file.buffer)
           .resize(2000, 1333)
           .toFormat('jpeg')
           .jpeg({ quality: 90 })
-          .toFile(`public/img/seguros/${filename}`);
+          .toFile(`public/img/seguros/${type}/${filename}`);
 
-        req.body.images.push(filename);
-      })
-    );
+        imageNames.push(filename);
+      }
+    })
+  );
+  return images;
+};
+
+exports.resizeSeguroImg = catchAsync(async (req, res, next) => {
+  if (!req.files) return next();
+
+  if (req.files.apolice) {
+    resizeOne(req.files.apolice, 'apolice');
+  }
+
+  if (req.files.comprovativos) {
+    resizeMany(req.files.comprovativos, 'comprovativos');
+  }
+
+  if (req.files.docIdentificacaos) {
+    resizeOne(req.files.docIdentificacaos, 'docIdentificacaos');
   }
 
   next();
 });
 
-const filterObj = (obj, ...allowedFields) => {
-  const newObj = {};
+// const filterObj = (obj, ...allowedFields) => {
+//   const newObj = {};
 
-  Object.keys(obj).forEach(el => {
-    if (allowedFields.includes(el)) newObj[el] = obj[el];
-  });
+//   Object.keys(obj).forEach(el => {
+//     if (allowedFields.includes(el)) newObj[el] = obj[el];
+//   });
 
-  return newObj;
-};
+//   return newObj;
+// };
 
 const isRequiredFields = (obj, ...reqFields) => {
   const fildObj = Object.keys(obj);
@@ -77,41 +97,9 @@ const isRequiredFields = (obj, ...reqFields) => {
 };
 //TODO: Redefinir os Campos
 exports.validateFilds = (req, res, next) => {
-  if (
-    !isRequiredFields(
-      req.body,
-      'nome',
-      'endereco',
-      'pacote',
-      'fornecedor',
-      'coverImage',
-      'categoria'
-    )
-  ) {
+  if (!isRequiredFields(req.body, 'tipo', 'modalidade', 'seguradora')) {
     return next(new AppError(ErrorMessage[15].message, 400));
   }
-
-  const fieldsBody = Object.keys(req.body);
-
-  if (fieldsBody.includes('features')) {
-    const { features } = req.body;
-    const newFeatures = [];
-
-    features.forEach(fe => {
-      if (isRequiredFields(fe, 'feature', 'price'))
-        newFeatures.push(filterObj(fe, 'feature', 'price'));
-    });
-
-    req.body.price =
-      req.body.price || newFeatures.reduce((total, current) => total + current);
-    req.body.features = newFeatures;
-
-    return next();
-  }
-
-  if (!fieldsBody.includes('price'))
-    return next(new AppError(ErrorMessage[15].message, 400));
-
   next();
 };
 
