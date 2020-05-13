@@ -26,26 +26,29 @@ exports.uploadSeguroDocs = upload.fields([
   { name: 'docIdentificacaos', maxCount: 10 }
 ]);
 
-const handlingFiles = async (files, type) => {
+const handlingFiles = async (files, modalidade, type) => {
   const fileNames = [];
   let filename;
 
   await Promise.all(
     files.map(async (file, i) => {
       if (file.mimetype.startsWith('image')) {
-        filename = `seguro-${type}-${Date.now()}-${i}.jpeg`;
+        filename = `seguro-${modalidade}-${type}-${Date.now()}-${i}.jpeg`;
 
         await sharp(file.buffer)
           .resize(2000, 1333)
           .toFormat('jpeg')
           .jpeg({ quality: 90 })
-          .toFile(`public/seguros/${type}/${filename}`);
+          .toFile(`public/seguros/${modalidade}/${type}/${filename}`);
 
         fileNames.push(filename);
       } else if (file.mimetype === 'application/pdf') {
-        filename = `seguro-${type}-${Date.now()}-${i}.pdf`;
+        filename = `seguro-${modalidade}-${type}-${Date.now()}-${i}.pdf`;
 
-        fs.writeFileSync(`public/seguros/${type}/${filename}`, file);
+        fs.writeFileSync(
+          `public/seguros/${modalidade}/${type}/${filename}`,
+          file
+        );
 
         fileNames.push(filename);
       }
@@ -54,22 +57,31 @@ const handlingFiles = async (files, type) => {
   return fileNames;
 };
 
-exports.resizeSeguroImg = catchAsync(async (req, res, next) => {
+exports.validateFiles = catchAsync(async (req, res, next) => {
   if (!req.files) return next();
 
   if (req.files.apolice) {
-    const files = await handlingFiles(req.files.apolice, 'apolice');
+    const files = await handlingFiles(
+      req.files.apolice,
+      req.body.modalidade,
+      'apolice'
+    );
     req.body.apolice = files;
   }
 
   if (req.files.comprovativos) {
-    const files = await handlingFiles(req.files.comprovativos, 'comprovativos');
+    const files = await handlingFiles(
+      req.files.comprovativos,
+      req.body.modalidade,
+      'comprovativos'
+    );
     req.body.comprovativos = files;
   }
 
   if (req.files.docIdentificacaos) {
     const files = await handlingFiles(
       req.files.docIdentificacaos,
+      req.body.modalidade,
       'docIdentificacaos'
     );
     req.body.docIdentificacaos = files;
@@ -77,16 +89,6 @@ exports.resizeSeguroImg = catchAsync(async (req, res, next) => {
 
   next();
 });
-
-// const filterObj = (obj, ...allowedFields) => {
-//   const newObj = {};
-
-//   Object.keys(obj).forEach(el => {
-//     if (allowedFields.includes(el)) newObj[el] = obj[el];
-//   });
-
-//   return newObj;
-// };
 
 const isRequiredFields = (obj, ...reqFields) => {
   const fildObj = Object.keys(obj);
@@ -96,16 +98,22 @@ const isRequiredFields = (obj, ...reqFields) => {
   });
   return true;
 };
-//TODO: Redefinir os Campos
+
 exports.validateFilds = (req, res, next) => {
-  if (!isRequiredFields(req.body, 'tipo', 'modalidade', 'seguradora')) {
+  if (!isRequiredFields(req.body, 'modalidade')) {
     return next(new AppError(ErrorMessage[15].message, 400));
   }
   next();
 };
 
+exports.createSeguro = catchAsync(async (req, res, next) => {
+  const doc = await Seguro.create(req.body);
+  this.createLogs(req.user.id, Seguro, null, doc, req.method);
+  req.seguro = doc;
+  next();
+});
+
 exports.getSeguro = factory.getOne(Seguro);
 exports.getAllSeguros = factory.getAll(Seguro);
-exports.createSeguro = factory.createOne(Seguro);
 exports.updateSeguro = factory.updateOne(Seguro);
 exports.deleteSeguro = factory.deleteOne(Seguro);

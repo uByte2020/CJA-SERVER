@@ -1,10 +1,12 @@
 /* eslint-disable no-use-before-define */
 const mongoose = require('mongoose');
+const Planos = require('./../utils/planos');
 
 const seguroViagemSchema = new mongoose.Schema({
   plano: {
     type: String,
-    required: true
+    required: true,
+    enum: ['Europa', 'Mundial', 'Medica']
   },
   pessoas: {
     type: Number,
@@ -36,6 +38,10 @@ seguroViagemSchema.pre(/^find/, async function(next) {
   this.populate({ path: 'seguro' });
   next();
 });
+
+seguroViagemSchema.methods.planos = function() {
+  return Planos;
+};
 
 const SeguroViagem = mongoose.model('seguroViagems', seguroViagemSchema);
 

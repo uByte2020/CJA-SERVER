@@ -1,26 +1,31 @@
 const express = require('express');
 const seguroController = require('../controllers/seguroController');
+const seguroViagemRoutes = require('./seguroViagemRoutes');
 // const authController = require('../controllers/authController');
 
 const router = express.Router({ mergeParams: true });
+
+router.use('/viagens', seguroViagemRoutes);
 
 router.route('/').get(seguroController.getAllSeguros);
 
 router.route('/:id').get(seguroController.getSeguro);
 
-router.route('/').post(
-  seguroController.uploadSeguroDocs,
-  seguroController.resizeSeguroImg
-  // seguroController.validateFilds,
-  // seguroController.createSeguro
-);
+router
+  .route('/')
+  .post(
+    seguroController.validateFilds,
+    seguroController.uploadSeguroDocs,
+    seguroController.validateFiles,
+    seguroController.createSeguro
+  );
 
 router
   .route('/:id')
   .patch(
-    seguroController.uploadSeguroDocs
-    // seguroController.resizeSeguroPhoto,
-    // seguroController.updateSeguro
+    seguroController.validateFilds,
+    seguroController.uploadSeguroDocs,
+    seguroController.updateSeguro
   )
   .delete(seguroController.deleteSeguro);
 

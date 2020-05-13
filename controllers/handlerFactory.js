@@ -90,3 +90,42 @@ exports.deleteOne = Model =>
       data: null
     });
   });
+
+exports.addTo = (Model, filter) =>
+  catchAsync(async (req, res, next) => {
+    const doc = await Model.findOneAndUpdate(
+      { _id: req.params.id },
+      { $addToSet: filter },
+      {
+        new: true, //Para devolver o documento actualizado
+        runValidators: true,
+        upsert: true
+      }
+    );
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        data: doc
+      }
+    });
+  });
+
+exports.removeFrom = (Model, filter) =>
+  catchAsync(async (req, res, next) => {
+    const doc = await Model.findOneAndUpdate(
+      { _id: req.params.id },
+      { $pull: filter },
+      {
+        new: true, //Para devolver o documento actualizado
+        runValidators: true
+      }
+    );
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        data: doc
+      }
+    });
+  });
