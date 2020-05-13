@@ -1,5 +1,6 @@
 const multer = require('multer');
 const sharp = require('sharp');
+const fs = require('fs');
 const Seguro = require('./../models/seguroModel');
 const factory = require('./handlerFactory');
 const AppError = require('../utils/appError');
@@ -25,53 +26,53 @@ exports.uploadSeguroDocs = upload.fields([
   { name: 'docIdentificacaos', maxCount: 10 }
 ]);
 
-const resizeOne = async (image, type) => {
-  if (image.mimetype.startsWith('image')) {
-    const imageName = `seguro-${type}-${Date.now()}.jpeg`;
-
-    await sharp(image.buffer)
-      .resize(2000, 1333)
-      .toFormat('jpeg')
-      .jpeg({ quality: 90 })
-      .toFile(`public/img/seguros/${type}/${imageName}`);
-    return imageName;
-  }
-};
-
-const resizeMany = async (images, type) => {
-  const imageNames = [];
+const handlingFiles = async (files, type) => {
+  const fileNames = [];
+  let filename;
 
   await Promise.all(
-    images.map(async (file, i) => {
+    files.map(async (file, i) => {
       if (file.mimetype.startsWith('image')) {
-        const filename = `seguro-${type}-${Date.now()}-${i}.jpeg`;
+        filename = `seguro-${type}-${Date.now()}-${i}.jpeg`;
 
         await sharp(file.buffer)
           .resize(2000, 1333)
           .toFormat('jpeg')
           .jpeg({ quality: 90 })
-          .toFile(`public/img/seguros/${type}/${filename}`);
+          .toFile(`public/seguros/${type}/${filename}`);
 
-        imageNames.push(filename);
+        fileNames.push(filename);
+      } else if (file.mimetype === 'application/pdf') {
+        filename = `seguro-${type}-${Date.now()}-${i}.pdf`;
+
+        fs.writeFileSync(`public/seguros/${type}/${filename}`, file);
+
+        fileNames.push(filename);
       }
     })
   );
-  return images;
+  return fileNames;
 };
 
 exports.resizeSeguroImg = catchAsync(async (req, res, next) => {
   if (!req.files) return next();
 
   if (req.files.apolice) {
-    resizeOne(req.files.apolice, 'apolice');
+    const files = await handlingFiles(req.files.apolice, 'apolice');
+    req.body.apolice = files;
   }
 
   if (req.files.comprovativos) {
-    resizeMany(req.files.comprovativos, 'comprovativos');
+    const files = await handlingFiles(req.files.comprovativos, 'comprovativos');
+    req.body.comprovativos = files;
   }
 
   if (req.files.docIdentificacaos) {
-    resizeOne(req.files.docIdentificacaos, 'docIdentificacaos');
+    const files = await handlingFiles(
+      req.files.docIdentificacaos,
+      'docIdentificacaos'
+    );
+    req.body.docIdentificacaos = files;
   }
 
   next();
