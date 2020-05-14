@@ -27,8 +27,7 @@ router
   .get(
     solicitacaoController.getUserSolicitations,
     solicitacaoController.getAllSolicitacao
-  )
-  .post(solicitacaoController.createSolicitacao);
+  );
 
 router
   .route('/:id')

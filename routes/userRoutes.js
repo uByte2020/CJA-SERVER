@@ -2,7 +2,6 @@ const express = require('express');
 const userController = require('./../controllers/userController');
 const authController = require('./../controllers/authController');
 const solicitacaoRouter = require('./solicitacaoRouter');
-const serviceRouter = require('./seguroRoutes');
 
 const router = express.Router();
 
@@ -28,21 +27,19 @@ router.delete('/deleteMe', userController.deleteMe);
 router.get('/me', userController.getMe, userController.getUser);
 
 router.use(
-  '/:clientId/solicitacaos',
-  authController.restrictTo(0),
+  '/:userId/solicitacaos/:perfilCode',
+  authController.restrictTo(0, 1),
   solicitacaoRouter
 );
 
-router.use('/:fornecedorId/services', serviceRouter);
-
 router
   .route('/')
-  .get(userController.getAllUsers) // API to get All Users
+  .get(authController.restrictTo(0), userController.getAllUsers) // API to get All Users
   .post(userController.createUser); // Criar API para api que cria uma nova User
 
 router
   .route('/:id')
-  .get(userController.getUser) // API to get User sending a id by parameter (id)
+  .get(authController.restrictTo(0), userController.getUser) // API to get User sending a id by parameter (id)
   .patch(userController.updateUser) // API to update User sending a id by parameter (id)
   .delete(userController.deleteUser); // API to delete User sending a id by parameter (id)
 

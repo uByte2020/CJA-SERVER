@@ -7,8 +7,10 @@ exports.getMySolicitations = (req, res, next) => {
 };
 
 exports.getUserSolicitations = (req, res, next) => {
-  if (req.params.clienteId) req.query.cliente = req.params.clientId;
-  else if (req.params.mediadorId) req.query.mediador = req.params.mediadorId;
+  if (req.params.userId && req.params.perfilCode) {
+    if (req.params.perfilCode === 2) req.query.cliente = req.params.userId;
+    else req.query.mediador = req.params.userId;
+  }
   next();
 };
 

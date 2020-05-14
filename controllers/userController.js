@@ -88,6 +88,11 @@ exports.getMe = (req, res, next) => {
   next();
 };
 
+exports.registrarMediador = (req, res, next) => {
+  req.body.role = 1;
+  next();
+};
+
 exports.getAllUsers = factory.getAll(User);
 exports.getUser = factory.getOne(User);
 exports.createUser = factory.createOne(User);

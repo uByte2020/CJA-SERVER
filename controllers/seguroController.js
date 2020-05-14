@@ -7,6 +7,19 @@ const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 const ErrorMessage = require('./../utils/error');
 
+const filds = [
+  'tipo',
+  'modalidade',
+  'price',
+  'simulacao',
+  'apolice',
+  'comprovativos',
+  'docIdentificacaos',
+  'estado',
+  'seguradora',
+  'sinistros'
+];
+
 const multerStorage = multer.memoryStorage();
 
 const multerFilter = (req, file, cb) => {
@@ -106,13 +119,22 @@ exports.validateFilds = (req, res, next) => {
   next();
 };
 
-exports.createSeguro = catchAsync(async (req, res, next) => {
-  const doc = await Seguro.create(req.body);
-  this.createLogs(req.user.id, Seguro, null, doc, req.method);
-  req.seguro = doc;
-  next();
-});
+const filterObj = (obj, ...allowedFields) => {
+  const newObj = {};
 
+  Object.keys(obj).forEach(el => {
+    if (allowedFields.includes(el)) newObj[el] = obj[el];
+  });
+
+  return newObj;
+};
+
+exports.extractFilds = (req, res, next) => {
+  req.body = filterObj(req.body, ...filds);
+  next();
+};
+
+exports.createSeguro = factory.createOne(Seguro);
 exports.getSeguro = factory.getOne(Seguro);
 exports.getAllSeguros = factory.getAll(Seguro);
 exports.updateSeguro = factory.updateOne(Seguro);

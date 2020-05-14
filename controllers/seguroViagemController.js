@@ -4,8 +4,18 @@ const fs = require('fs');
 const factory = require('./handlerFactory');
 const SeguroViagem = require('../models/seguroViagemModel');
 const AppError = require('../utils/appError');
+const SimulacaoViagem = require('../utils/seguroViagem/simulacaoViagem');
 const catchAsync = require('../utils/catchAsync');
 const ErrorMessage = require('./../utils/error');
+
+const filds = [
+  'plano',
+  'pessoas',
+  'dataPartida',
+  'dataVolta',
+  'documentos',
+  'seguro'
+];
 
 const multerStorage = multer.memoryStorage();
 
@@ -85,59 +95,57 @@ exports.getPlanos = (req, res, next) => {
   });
 };
 
+const isRequiredFields = (obj, ...reqFields) => {
+  const fildObj = Object.keys(obj);
+
+  reqFields.forEach(el => {
+    if (!fildObj.includes(el)) return false;
+  });
+  return true;
+};
+
 exports.simular = (req, res, next) => {
-  if (!req.body.plano) return next();
+  if (
+    !isRequiredFields(
+      req.body,
+      'seguradora',
+      'plano',
+      'pessoas',
+      'dataPartida',
+      'dataVolta'
+    )
+  )
+    return next(new AppError('Preencher os campos obrigatórios', 401));
 
-  const plano = SeguroViagem.getPlanos()[req.body.plano];
+  const result = new SimulacaoViagem(req.body, req.body.seguradora).simular();
 
-  if (!plano) return next();
-
-  const { pessoas, dataPartida, dataVolta } = req.body;
-  const difference = Math.abs(
-    new Date(dataPartida).getTime() - new Date(dataVolta).getTime()
-  );
-  const days = Math.ceil(difference / (1000 * 60 * 60 * 24));
-  let index;
-
-  if (days >= 1 && days <= 8) {
-    index = 0;
-  } else if (days >= 9 && days <= 10) {
-    index = 1;
-  } else if (days >= 11 && days <= 15) {
-    index = 2;
-  } else if (days >= 16 && days <= 21) {
-    index = 3;
-  } else if (days >= 22 && days <= 30) {
-    index = 4;
-  } else if (days >= 31 && days <= 60) {
-    index = 5;
-  } else if (days >= 61 && days <= 90) {
-    index = 6;
-  } else {
-    index = null;
-  }
-
-  if (!index) return next();
-
-  const keys = Object.keys(plano);
-  const precos = [];
-  if (!keys)
-    keys.forEach(key => {
-      const preco = (plano[key][index] * pessoas).toFixed(2);
-      precos.push({ key, preco });
-    });
-  else precos.push((plano[index] * pessoas).toFixed(2));
+  if (!result) next(new AppError('Campos Preenchidos Incorrectamente', 500));
 
   res.status(200).json({
     status: 'success',
     data: {
-      doc: precos
+      precos: result
     }
   });
 };
 
+const filterObj = (obj, ...allowedFields) => {
+  const newObj = {};
+
+  Object.keys(obj).forEach(el => {
+    if (allowedFields.includes(el)) newObj[el] = obj[el];
+  });
+
+  return newObj;
+};
+
+exports.extractFilds = (req, res, next) => {
+  req.body = filterObj(req.body, ...filds);
+  next();
+};
+
+exports.updateSeguroViagem = factory.updateOne(SeguroViagem);
 exports.getSeguroViagem = factory.getOne(SeguroViagem);
 exports.getAllSeguroViagens = factory.getAll(SeguroViagem);
 exports.createSeguroViagem = factory.createOne(SeguroViagem);
-exports.updateSeguroViagem = factory.updateOne(SeguroViagem);
 exports.deleteSeguroViagem = factory.deleteOne(SeguroViagem);
