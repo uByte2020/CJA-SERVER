@@ -1,6 +1,5 @@
 /* eslint-disable no-use-before-define */
 const mongoose = require('mongoose');
-const Estado = require('./estadoModel');
 const seguradora = require('./seguradoraModel');
 const modalidade = require('./modalidadeModel');
 const AppError = require('../utils/appError');
@@ -18,11 +17,11 @@ const seguroSchema = new mongoose.Schema({
   },
   price: {
     type: Number,
-    default: 'default.jpg'
+    default: 0.0
   },
   simulacao: {
     type: Number,
-    default: 'default.jpg'
+    default: 0.0
   },
   apolice: {
     type: String,
@@ -30,15 +29,16 @@ const seguroSchema = new mongoose.Schema({
   },
   comprovativos: {
     type: [String],
-    default: ''
+    default: []
   },
   docIdentificacaos: {
     type: [String],
     required: [true, 'Um Serviço deve ter um endereço']
   },
   estado: {
-    type: Object,
-    required: [true, 'Um Serviço deve ter um estado']
+    type: Number,
+    min: 0,
+    default: 0
   },
   seguradora: {
     type: Object,
@@ -62,12 +62,10 @@ const seguroSchema = new mongoose.Schema({
 
 seguroSchema.pre('save', async function(next) {
   this.seguradora = await seguradora.findById(this.seguradora);
-  this.estado = await Estado.findOne({ estadoCode: { $eq: this.estado } });
   this.modalidade = await modalidade.findById(this.modalidade);
 
   if (!this.seguradora)
     return next(new AppError(ErrorMessage[21].message, 400));
-  if (!this.estado) return next(new AppError(ErrorMessage[22].message, 400));
   if (!this.modalidade)
     return next(new AppError(ErrorMessage[23].message, 400));
 

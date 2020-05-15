@@ -13,6 +13,8 @@ const profileRouter = require('./routes/profileRoutes');
 const stateRouter = require('./routes/stateRoutes');
 const seguroRouter = require('./routes/seguroRoutes');
 const solicitacaoRouter = require('./routes/solicitacaoRouter');
+const seguradoraRouter = require('./routes/seguradoraRoutes');
+const modalidadeRouter = require('./routes/modalidadeRoutes');
 // const logsRouter = require('./routes/logRoutes');
 const AppError = require('./utils/appError');
 const globalHandlerError = require('./controllers/errorController');
@@ -61,6 +63,8 @@ app.use('/api/v1/perfils', profileRouter);
 app.use('/api/v1/estados', stateRouter);
 app.use('/api/v1/seguros', seguroRouter);
 app.use('/api/v1/solicitacoes', solicitacaoRouter);
+app.use('/api/v1/seguradoras', seguradoraRouter);
+app.use('/api/v1/modalidades', modalidadeRouter);
 // app.use('/api/v1/logs', logsRouter);
 
 app.all('*', (req, res, next) => {

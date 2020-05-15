@@ -24,6 +24,7 @@ router.patch(
 );
 
 router.delete('/deleteMe', userController.deleteMe);
+
 router.get('/me', userController.getMe, userController.getUser);
 
 router.use(
@@ -34,13 +35,13 @@ router.use(
 
 router
   .route('/')
-  .get(authController.restrictTo(0), userController.getAllUsers) // API to get All Users
-  .post(userController.createUser); // Criar API para api que cria uma nova User
+  .get(authController.restrictTo(0, 1), userController.getAllUsers) // API to get All Users
+  .post(authController.restrictTo(0), userController.createUser); // Criar API para api que cria uma nova User
 
 router
   .route('/:id')
   .get(authController.restrictTo(0), userController.getUser) // API to get User sending a id by parameter (id)
-  .patch(userController.updateUser) // API to update User sending a id by parameter (id)
-  .delete(userController.deleteUser); // API to delete User sending a id by parameter (id)
+  .patch(authController.restrictTo(0), userController.updateUser) // API to update User sending a id by parameter (id)
+  .delete(authController.restrictTo(0), userController.deleteUser); // API to delete User sending a id by parameter (id)
 
 module.exports = router;

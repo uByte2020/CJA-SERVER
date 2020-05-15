@@ -4,7 +4,8 @@ const seguradoraSchema = new mongoose.Schema({
   seguradora: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
+    unique: true
   },
   ibans: {
     type: [String],

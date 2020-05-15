@@ -1,0 +1,14 @@
+[
+  {
+    "seguradora": "Nossa Seguro",
+    "ibans": ["1234567", "123456N"]
+  },
+  {
+    "seguradora": "Sahan",
+    "ibans": ["1234567", "123456N"]
+  },
+  {
+    "seguradora": "TESTE",
+    "ibans": ["1234567", "123456N"]
+  }
+]

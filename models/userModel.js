@@ -57,8 +57,10 @@ const userSchema = new mongoose.Schema({
     default: null
   },
   role: {
-    type: Object,
-    required: true
+    type: Number,
+    required: true,
+    min: 0,
+    max: 2
   },
   password: {
     type: String,
@@ -109,8 +111,8 @@ userSchema.pre(/^find/, function(next) {
 userSchema.pre('save', async function(next) {
   // eslint-disable-next-line no-restricted-globals
   if (!isNaN(this.role)) {
-    this.role = await Perfil.findOne({ perfilCode: { $eq: this.role } });
-    if (!this.role) return next(new AppError(ErrorMessage[0].message, 500));
+    const role = await Perfil.findOne({ perfilCode: { $eq: this.role } });
+    if (!role) return next(new AppError(ErrorMessage[0].message, 500));
   }
   next();
 });

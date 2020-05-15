@@ -181,7 +181,7 @@ exports.isLogged = async (req, res, next) => {
 
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
-    if (!roles.includes(req.user.role.perfilCode)) {
+    if (!roles.includes(req.user.role)) {
       return next(new AppError(ErrorMessage[8].message, 403));
     }
     next();

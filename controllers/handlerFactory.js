@@ -91,11 +91,11 @@ exports.deleteOne = Model =>
     });
   });
 
-exports.addTo = (Model, filter) =>
+exports.addTo = Model =>
   catchAsync(async (req, res, next) => {
     const doc = await Model.findOneAndUpdate(
       { _id: req.params.id },
-      { $addToSet: filter },
+      { $addToSet: req.filter },
       {
         new: true, //Para devolver o documento actualizado
         runValidators: true,
@@ -111,11 +111,11 @@ exports.addTo = (Model, filter) =>
     });
   });
 
-exports.removeFrom = (Model, filter) =>
+exports.removeFrom = Model =>
   catchAsync(async (req, res, next) => {
     const doc = await Model.findOneAndUpdate(
       { _id: req.params.id },
-      { $pull: filter },
+      { $pull: req.filter },
       {
         new: true, //Para devolver o documento actualizado
         runValidators: true

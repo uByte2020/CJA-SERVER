@@ -10,21 +10,27 @@ router
   .post(
     authController.protect,
     authController.restrictTo(0),
+    profileController.generatePerfilCode,
     profileController.createProfile
   );
+
+router.use(authController.protect, authController.restrictTo(0));
 
 router
   .route('/:id')
   .get(profileController.getProfile)
+  .patch(profileController.updateProfile)
+  .delete(profileController.deleteProfile);
+
+router
+  .route('/:id/modalidades')
   .patch(
-    authController.protect,
-    authController.restrictTo(0),
-    profileController.updateProfile
+    profileController.validateModalidadeFild,
+    profileController.addModalidades
   )
   .delete(
-    authController.protect,
-    authController.restrictTo(0),
-    profileController.deleteProfile
+    profileController.validateModalidadeFild,
+    profileController.removeModalidade
   );
 
 module.exports = router;

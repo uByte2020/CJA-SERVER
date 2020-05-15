@@ -12,7 +12,6 @@ router.use(authController.protect);
 router
   .route('/')
   .post(
-    seguroController.validateFilds,
     seguroController.uploadSeguroDocs,
     seguroController.validateFiles,
     seguroController.createSeguro
@@ -22,12 +21,11 @@ router
   .route('/:id')
   .patch(
     seguroController.extractFilds,
-    seguroController.validateFilds,
     seguroController.uploadSeguroDocs,
     seguroController.validateFiles,
     seguroController.updateSeguro
   )
-  .delete(seguroController.deleteSeguro);
+  .delete(authController.restrictTo(0), seguroController.deleteSeguro);
 
 router.use(authController.restrictTo(0, 1));
 

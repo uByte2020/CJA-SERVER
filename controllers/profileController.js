@@ -4,47 +4,25 @@ const AppError = require('./../utils/appError');
 const catchAsync = require('./../utils/catchAsync');
 const ErrorMessage = require('./../utils/error');
 
-exports.addModalidades = catchAsync(async (req, res, next) => {
+exports.validateModalidadeFild = (req, res, next) => {
   if (!req.params.id || !req.body.modalidades)
     return next(new AppError(ErrorMessage[12].message, 400));
+  req.filter = { modalidades: req.body.modalidades };
+  next();
+};
 
-  const doc = await Profile.findOneAndUpdate(
-    { _id: req.params.id },
-    { $addToSet: { modalidades: req.body.modalidades } },
+exports.addModalidades = factory.addTo(Profile);
+
+exports.removeModalidade = factory.removeFrom(Profile);
+
+exports.generatePerfilCode = catchAsync(async (req, res, next) => {
+  const perfilCode = await Profile.aggregate([
     {
-      new: true, //Para devolver o documento actualizado
-      runValidators: true,
-      upsert: true
+      $group: { _id: null, max: { $max: '$perfilCode' } }
     }
-  );
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      data: doc
-    }
-  });
-});
-
-exports.removeModalidades = catchAsync(async (req, res, next) => {
-  if (!req.params.id || !req.body.modalidade)
-    return next(new AppError(ErrorMessage[12].message, 400));
-
-  const doc = await Profile.findOneAndUpdate(
-    { _id: req.params.id },
-    { $pull: { modalidades: req.body.modalidade } },
-    {
-      new: true, //Para devolver o documento actualizado
-      runValidators: true
-    }
-  );
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      data: doc
-    }
-  });
+  ]);
+  req.body.perfilCode = 1 + perfilCode[0].max * 1;
+  next();
 });
 
 exports.getProfile = factory.getOne(Profile);

@@ -52,9 +52,10 @@ exports.updateMe = catchAsync(async (req, res) => {
     req.body,
     'name',
     'email',
-    'role',
     'telemovel',
-    'endereco'
+    'endereco',
+    'nif',
+    'actividade'
   );
   const oldDoc = await User.findById(req.user.id);
   if (req.file) filtedObect.photo = req.body.photo;

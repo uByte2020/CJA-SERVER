@@ -73,6 +73,10 @@ const handlingFiles = async (files, modalidade, type) => {
 exports.validateFiles = catchAsync(async (req, res, next) => {
   if (!req.files) return next();
 
+  if (!req.body.modalidade) {
+    return next(new AppError(ErrorMessage[15].message, 400));
+  }
+
   if (req.files.apolice) {
     const files = await handlingFiles(
       req.files.apolice,
@@ -103,22 +107,6 @@ exports.validateFiles = catchAsync(async (req, res, next) => {
   next();
 });
 
-const isRequiredFields = (obj, ...reqFields) => {
-  const fildObj = Object.keys(obj);
-
-  reqFields.forEach(el => {
-    if (!fildObj.includes(el)) return false;
-  });
-  return true;
-};
-
-exports.validateFilds = (req, res, next) => {
-  if (!isRequiredFields(req.body, 'modalidade')) {
-    return next(new AppError(ErrorMessage[15].message, 400));
-  }
-  next();
-};
-
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
 
@@ -139,3 +127,12 @@ exports.getSeguro = factory.getOne(Seguro);
 exports.getAllSeguros = factory.getAll(Seguro);
 exports.updateSeguro = factory.updateOne(Seguro);
 exports.deleteSeguro = factory.deleteOne(Seguro);
+
+// const isRequiredFields = (obj, ...reqFields) => {
+//   const fildObj = Object.keys(obj);
+
+//   reqFields.forEach(el => {
+//     if (!fildObj.includes(el)) return false;
+//   });
+//   return true;
+// };

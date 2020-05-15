@@ -4,12 +4,17 @@ const authController = require('./../controllers/authController');
 
 const router = express.Router();
 
-router.use(authController.protect, authController.restrictTo(0, 1));
+router.use(authController.protect);
 
 router
   .route('/')
-  .get(stateController.getAllStates)
-  .post(stateController.createState);
+  .get(authController.restrictTo(0, 1), stateController.getAllStates);
+
+router.use(authController.protect, authController.restrictTo(0));
+
+router
+  .route('/')
+  .post(stateController.generateStatusCode, stateController.createState);
 
 router
   .route('/:id')

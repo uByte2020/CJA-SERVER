@@ -4,6 +4,8 @@ const dotenv = require('dotenv');
 const Estado = require('./../models/estadoModel');
 const Perfil = require('./../models/perfilModel');
 const User = require('./../models/userModel');
+const Seguradora = require('./../models/seguradoraModel');
+const Modalidade = require('./../models/modalidadeModel');
 
 dotenv.config({ path: './config.env' });
 
@@ -31,26 +33,23 @@ const estados = JSON.parse(
 const perfis = JSON.parse(
   fs.readFileSync(`${__dirname}/perfils.json`, 'utf-8')
 );
-const servicos = JSON.parse(
-  fs.readFileSync(`${__dirname}/servicos.json`, 'utf-8')
-);
+
 const users = JSON.parse(fs.readFileSync(`${__dirname}/users.json`, 'utf-8'));
+const seguradoras = JSON.parse(
+  fs.readFileSync(`${__dirname}/seguradoras.json`, 'utf-8')
+);
+const modalidades = JSON.parse(
+  fs.readFileSync(`${__dirname}/modalidades.json`, 'utf-8')
+);
 
 // IMPORT DATA INTO DB
 const importData = async () => {
   try {
     await Estado.create(estados);
+    await Seguradora.create(seguradoras);
+    await Modalidade.create(modalidades);
     await Perfil.create(perfis);
     await User.create(users, { validateBeforeSave: false });
-
-    const usersResult = await User.findOne(
-      { 'role.perfilCode': 1 },
-      { _id: 1 }
-    );
-
-    servicos.forEach(el => {
-      el.fornecedor = usersResult._id;
-    });
 
     console.log('Data successfully loaded!');
   } catch (err) {
@@ -65,6 +64,8 @@ const deleteData = async () => {
     await Estado.deleteMany();
     await Perfil.deleteMany();
     await User.deleteMany();
+    await Seguradora.deleteMany();
+    await Modalidade.deleteMany();
     console.log('Data successfully deleted!');
   } catch (err) {
     console.log(err);

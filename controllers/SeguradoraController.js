@@ -1,35 +1,29 @@
 const Seguradora = require('../models/seguradoraModel');
 const factory = require('./handlerFactory');
-const AppError = require('./../utils/appError');
+const AppError = require('../utils/appError');
 const ErrorMessage = require('./../utils/error');
 
-exports.addIban = (req, res, next) => {
+exports.validateIbanFild = (req, res, next) => {
   if (!req.params.id || !req.body.ibans)
     return next(new AppError(ErrorMessage[12].message, 400));
-
-  return factory.addTo(Seguradora, { ibans: req.body.ibans });
+  req.filter = { ibans: req.body.ibans };
+  next();
 };
 
-exports.removeIban = (req, res, next) => {
-  if (!req.params.id || !req.body.iban)
-    return next(new AppError(ErrorMessage[12].message, 400));
+exports.addIban = factory.addTo(Seguradora);
 
-  factory.removeFrom(Seguradora, { ibans: req.body.iban });
-};
+exports.removeIban = factory.removeFrom(Seguradora);
 
-exports.addModalidades = (req, res, next) => {
+exports.validateModalidadeFild = (req, res, next) => {
   if (!req.params.id || !req.body.modalidades)
     return next(new AppError(ErrorMessage[12].message, 400));
-
-  return factory.addTo(Seguradora, { modalidades: req.body.modalidades });
+  req.filter = { modalidades: req.body.modalidades };
+  next();
 };
 
-exports.removeModalidade = (req, res, next) => {
-  if (!req.params.id || !req.body.modalidade)
-    return next(new AppError(ErrorMessage[12].message, 400));
+exports.addModalidades = factory.addTo(Seguradora);
 
-  factory.removeFrom(Seguradora, { modalidades: req.body.modalidade });
-};
+exports.removeModalidade = factory.removeFrom(Seguradora);
 
 exports.getSeguradora = factory.getOne(Seguradora);
 exports.getAllSeguradoras = factory.getAll(Seguradora);
