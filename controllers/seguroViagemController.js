@@ -34,27 +34,26 @@ exports.uploadSeguroViagemDocs = upload.fields([
   { name: 'documentos', maxCount: 10 }
 ]);
 
-const handlingFiles = async (files, modalidade, type) => {
+const handlingFiles = async (files, type) => {
   const fileNames = [];
-  let filename;
 
   await Promise.all(
     files.map(async (file, i) => {
       if (file.mimetype.startsWith('image')) {
-        filename = `seguro-${modalidade}-${type}-${Date.now()}-${i}.jpeg`;
+        const filename = `seguro-viagem-${type}-${Date.now()}-${i}.jpeg`;
 
         await sharp(file.buffer)
           .resize(2000, 1333)
           .toFormat('jpeg')
           .jpeg({ quality: 90 })
-          .toFile(`public/seguros/${modalidade}/${type}/${filename}`);
+          .toFile(`public/files/seguros/viagem/${type}/${filename}`);
 
         fileNames.push(filename);
       } else if (file.mimetype === 'application/pdf') {
-        filename = `seguro-${modalidade}-${type}-${Date.now()}-${i}.pdf`;
+        const filename = `seguro-viagem-${type}-${Date.now()}-${i}.pdf`;
 
         fs.writeFileSync(
-          `public/seguros/${modalidade}/${type}/${filename}`,
+          `public/files/seguros/viagem/${type}/${filename}`,
           file
         );
 
@@ -69,20 +68,15 @@ exports.validateFiles = catchAsync(async (req, res, next) => {
   if (!req.files) return next();
 
   if (req.files.documentos) {
-    const files = await handlingFiles(
-      req.files.documentos,
-      'Viagem',
-      'documentos'
-    );
+    const files = await handlingFiles(req.files.documentos, 'documentos');
     req.body.documentos = files;
   }
   next();
 });
 
 exports.validateFilds = (req, res, next) => {
-  if (!req.seguro)
+  if (!req.body.seguro)
     next(new AppError('Ocorreu um Erro durante o Registro do Seguro', 500));
-  req.body.seguro = req.seguro._id;
   next();
 };
 
@@ -117,14 +111,18 @@ exports.simular = (req, res, next) => {
   )
     return next(new AppError('Preencher os campos obrigatórios', 401));
 
-  const result = new SimulacaoViagem(req.body, req.body.seguradora).simular();
+  const simulacao = new SimulacaoViagem(
+    req.body,
+    req.body.seguradora
+  ).simular();
 
-  if (!result) next(new AppError('Campos Preenchidos Incorrectamente', 500));
+  if (!simulacao.status)
+    next(new AppError('Campos Preenchidos Incorrectamente', 500));
 
   res.status(200).json({
     status: 'success',
     data: {
-      precos: result
+      precos: simulacao.data
     }
   });
 };

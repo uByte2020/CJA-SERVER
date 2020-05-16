@@ -11,9 +11,9 @@ router.use(authController.protect);
 router
   .route('/')
   .post(
-    seguroViagemController.extractFilds,
-    seguroViagemController.validateFilds,
     seguroViagemController.uploadSeguroViagemDocs,
+    seguroViagemController.validateFilds,
+    seguroViagemController.extractFilds,
     seguroViagemController.validateFiles,
     seguroViagemController.createSeguroViagem
   );
@@ -21,6 +21,7 @@ router
 router
   .route('/:id')
   .patch(
+    authController.restrictTo(0),
     seguroViagemController.extractFilds,
     seguroViagemController.uploadSeguroViagemDocs,
     seguroViagemController.validateFiles,

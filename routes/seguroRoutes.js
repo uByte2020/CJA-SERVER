@@ -20,8 +20,8 @@ router
 router
   .route('/:id')
   .patch(
-    seguroController.extractFilds,
     seguroController.uploadSeguroDocs,
+    seguroController.extractUpdateFilds,
     seguroController.validateFiles,
     seguroController.updateSeguro
   )

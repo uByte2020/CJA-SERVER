@@ -1,7 +1,8 @@
 const Planos = require('./planos');
+const AppError = require('./../appError');
 
 const SEGURADORA = {
-  NOSSA_SEGURO: 'NOSSASEGURO'
+  NOSSA_SEGURO: 'TESTE' //TODO:
 };
 
 class SimulacaoViagem {
@@ -14,13 +15,16 @@ class SimulacaoViagem {
     if (SEGURADORA.NOSSA_SEGURO === this.seguradora) {
       const { plano, pessoas, dataPartida, dataVolta } = this.filds;
 
-      const Plano = Planos.getPlanos()[plano.toLowerCase()];
+      const Plano = Planos[plano.toLowerCase()];
 
-      if (!Plano) return false;
+      if (!Plano)
+        return {
+          status: false,
+          err: new AppError('Plano Não Válido', 500)
+        };
 
-      const difference = Math.abs(
-        new Date(dataPartida).getTime() - new Date(dataVolta).getTime()
-      );
+      const difference =
+        new Date(dataVolta).getTime() - new Date(dataPartida).getTime();
       const days = Math.ceil(difference / (1000 * 60 * 60 * 24));
       let index;
 
@@ -42,19 +46,32 @@ class SimulacaoViagem {
         index = null;
       }
 
-      if (!index) return false;
+      if (index === null)
+        return {
+          status: false,
+          err: new AppError('Periodo de Viagem Inválido', 500)
+        };
 
       const keys = Object.keys(Plano);
       const precos = [];
-      if (!keys)
-        keys.forEach(key => {
-          const preco = (Plano[key][index] * pessoas).toFixed(2);
-          precos.push({ key, preco });
-        });
-      else precos.push((Plano[index] * pessoas).toFixed(2));
-      return precos;
+      keys.forEach(key => {
+        const preco = {};
+        preco[key] = (Plano[key][index] * pessoas).toFixed(2);
+        precos.push(preco);
+      });
+
+      return {
+        status: true,
+        data: precos
+      };
     }
-    return false;
+    return {
+      status: false,
+      err: new AppError(
+        'Não é possivel efectuar a simulação para esta seguradora',
+        500
+      )
+    };
   }
 }
 

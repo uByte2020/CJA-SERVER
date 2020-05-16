@@ -6,6 +6,12 @@ exports.getMySolicitations = (req, res, next) => {
   next();
 };
 
+exports.desactiveMySolicitations = (req, res, next) => {
+  req.body.cliente = req.user.id;
+  req.body.isActive = false;
+  next();
+};
+
 exports.getUserSolicitations = (req, res, next) => {
   if (req.params.userId && req.params.perfilCode) {
     if (req.params.perfilCode === 2) req.query.cliente = req.params.userId;
@@ -17,7 +23,21 @@ exports.getUserSolicitations = (req, res, next) => {
 exports.validateData = (req, res, next) => {
   if (!req.body.seguro) req.body.seguro = req.params.seguroId;
   if (!req.body.cliente) req.body.cliente = req.user.id;
-  req.body.estado = 1;
+  next();
+};
+
+const filterObj = (obj, ...allowedFields) => {
+  const newObj = {};
+
+  Object.keys(obj).forEach(el => {
+    if (allowedFields.includes(el)) newObj[el] = obj[el];
+  });
+
+  return newObj;
+};
+
+exports.extractFilds = (req, res, next) => {
+  req.body = filterObj(req.body, 'estado');
   next();
 };
 

@@ -14,10 +14,18 @@ router
   );
 
 router
-  .route('/MySolicitacoes')
+  .route('/mySolicitacoes')
   .get(
     solicitacaoController.getMySolicitations,
     solicitacaoController.getAllSolicitacao
+  );
+
+router
+  .route('/mySolicitacoes/:id')
+  .delete(
+    solicitacaoController.getMySolicitations,
+    solicitacaoController.desactiveMySolicitations,
+    solicitacaoController.updateSolicitacao
   );
 
 router.use(authController.restrictTo(0, 1));
@@ -32,7 +40,10 @@ router
 router
   .route('/:id')
   .get(solicitacaoController.getSolicitacao)
-  .patch(solicitacaoController.updateSolicitacao)
+  .patch(
+    solicitacaoController.extractFilds,
+    solicitacaoController.updateSolicitacao
+  )
   .delete(solicitacaoController.deleteSolicitacao);
 
 module.exports = router;

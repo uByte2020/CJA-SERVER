@@ -39,29 +39,25 @@ exports.uploadSeguroDocs = upload.fields([
   { name: 'docIdentificacaos', maxCount: 10 }
 ]);
 
-const handlingFiles = async (files, modalidade, type) => {
+const handlingFiles = async (files, type) => {
   const fileNames = [];
-  let filename;
 
   await Promise.all(
     files.map(async (file, i) => {
       if (file.mimetype.startsWith('image')) {
-        filename = `seguro-${modalidade}-${type}-${Date.now()}-${i}.jpeg`;
+        const filename = `seguro-${type}-${Date.now()}-${i}.jpeg`;
 
         await sharp(file.buffer)
           .resize(2000, 1333)
           .toFormat('jpeg')
           .jpeg({ quality: 90 })
-          .toFile(`public/seguros/${modalidade}/${type}/${filename}`);
+          .toFile(`public/files/seguros/${type}/${filename}`);
 
         fileNames.push(filename);
       } else if (file.mimetype === 'application/pdf') {
-        filename = `seguro-${modalidade}-${type}-${Date.now()}-${i}.pdf`;
+        const filename = `seguro-${type}-${Date.now()}-${i}.pdf`;
 
-        fs.writeFileSync(
-          `public/seguros/${modalidade}/${type}/${filename}`,
-          file
-        );
+        fs.writeFileSync(`public/files/seguros/${type}/${filename}`, file);
 
         fileNames.push(filename);
       }
@@ -73,32 +69,19 @@ const handlingFiles = async (files, modalidade, type) => {
 exports.validateFiles = catchAsync(async (req, res, next) => {
   if (!req.files) return next();
 
-  if (!req.body.modalidade) {
-    return next(new AppError(ErrorMessage[15].message, 400));
-  }
-
   if (req.files.apolice) {
-    const files = await handlingFiles(
-      req.files.apolice,
-      req.body.modalidade,
-      'apolice'
-    );
-    req.body.apolice = files;
+    const files = await handlingFiles(req.files.apolice, 'apolice');
+    req.body.apolice = files[0];
   }
 
   if (req.files.comprovativos) {
-    const files = await handlingFiles(
-      req.files.comprovativos,
-      req.body.modalidade,
-      'comprovativos'
-    );
+    const files = await handlingFiles(req.files.comprovativos, 'comprovativos');
     req.body.comprovativos = files;
   }
 
   if (req.files.docIdentificacaos) {
     const files = await handlingFiles(
       req.files.docIdentificacaos,
-      req.body.modalidade,
       'docIdentificacaos'
     );
     req.body.docIdentificacaos = files;
@@ -119,6 +102,11 @@ const filterObj = (obj, ...allowedFields) => {
 
 exports.extractFilds = (req, res, next) => {
   req.body = filterObj(req.body, ...filds);
+  next();
+};
+
+exports.extractUpdateFilds = (req, res, next) => {
+  req.body = filterObj(req.body, 'comprovativos');
   next();
 };
 
