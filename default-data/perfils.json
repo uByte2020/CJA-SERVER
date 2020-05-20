@@ -8,7 +8,11 @@
     "perfilCode": 1
   },
   {
-    "perfil": "Cliente",
+    "perfil": "Particular",
     "perfilCode": 2
+  },
+  {
+    "perfil": "Empresa",
+    "perfilCode": 3
   }
 ]

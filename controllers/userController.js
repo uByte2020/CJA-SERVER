@@ -1,6 +1,7 @@
 const multer = require('multer');
 const sharp = require('sharp');
 const User = require('./../models/userModel');
+const Perfil = require('./../models/perfilModel');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 const factory = require('./handlerFactory');
@@ -82,6 +83,20 @@ exports.deleteMe = catchAsync(async (req, res) => {
     status: 'success',
     data: null
   });
+});
+
+exports.getRoleById = catchAsync(async (req, res, next) => {
+  if (!req.body.role) {
+    // eslint-disable-next-line no-restricted-globals
+    if (!isNaN(req.body.role)) {
+      req.body.role = await Perfil.findOne({
+        perfilCode: { $eq: req.body.role }
+      });
+      if (!req.body.role)
+        return next(new AppError(ErrorMessage[0].message, 500));
+    }
+  }
+  next();
 });
 
 exports.getMe = (req, res, next) => {

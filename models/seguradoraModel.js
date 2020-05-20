@@ -1,6 +1,12 @@
 const mongoose = require('mongoose');
 
 const seguradoraSchema = new mongoose.Schema({
+  codigoSeguradora: {
+    type: String,
+    required: true,
+    trim: true,
+    unique: true
+  },
   seguradora: {
     type: String,
     required: true,

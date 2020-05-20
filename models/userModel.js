@@ -14,6 +14,11 @@ const userSchema = new mongoose.Schema({
     trim: true,
     required: [true, 'A User must have a name']
   },
+  descricao: {
+    type: String,
+    trim: true,
+    default: ''
+  },
   email: {
     type: String,
     trim: true,
@@ -38,7 +43,7 @@ const userSchema = new mongoose.Schema({
   photo: {
     type: String,
     trim: true,
-    default: 'default.jpg'
+    default: 'default.png'
   },
   dataNascimento: {
     type: Date,
@@ -57,10 +62,8 @@ const userSchema = new mongoose.Schema({
     default: null
   },
   role: {
-    type: Number,
-    required: true,
-    min: 0,
-    max: 2
+    type: Object,
+    required: true
   },
   password: {
     type: String,
@@ -90,6 +93,11 @@ const userSchema = new mongoose.Schema({
     default: true,
     select: false
   },
+  isBloqued: {
+    type: Boolean,
+    default: false,
+    select: false
+  },
   createdAt: {
     type: Date,
     default: Date.now(),
@@ -111,8 +119,8 @@ userSchema.pre(/^find/, function(next) {
 userSchema.pre('save', async function(next) {
   // eslint-disable-next-line no-restricted-globals
   if (!isNaN(this.role)) {
-    const role = await Perfil.findOne({ perfilCode: { $eq: this.role } });
-    if (!role) return next(new AppError(ErrorMessage[0].message, 500));
+    this.role = await Perfil.findOne({ perfilCode: { $eq: this.role } });
+    if (!this.role) return next(new AppError(ErrorMessage[0].message, 500));
   }
   next();
 });

@@ -1,18 +1,26 @@
 [
-    {
-        "estado":"Activo",
-        "estadoCode":1
-    },
-    {
-        "estado":"Inativo",
-        "estadoCode":2
-    },
-    {
-        "estado":"Pendente",
-        "estadoCode":3
-    },
-    {
-        "estado":"Cancelado",
-        "estadoCode":4
-    }
+  {
+    "estado": "Activo",
+    "estadoCode": 1
+  },
+  {
+    "estado": "Pendente",
+    "estadoCode": 2
+  },
+  {
+    "estado": "Renovado",
+    "estadoCode": 3
+  },
+  {
+    "estado": "Caducado",
+    "estadoCode": 4
+  },
+  {
+    "estado": "Cancelado",
+    "estadoCode": 5
+  },
+  {
+    "estado": "Desativado",
+    "estadoCode": 6
+  }
 ]

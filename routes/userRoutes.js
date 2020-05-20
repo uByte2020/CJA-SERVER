@@ -42,7 +42,11 @@ router
 router
   .route('/:id')
   .get(authController.restrictTo(0), userController.getUser) // API to get User sending a id by parameter (id)
-  .patch(authController.restrictTo(0), userController.updateUser) // API to update User sending a id by parameter (id)
+  .patch(
+    authController.restrictTo(0),
+    userController.getRoleById,
+    userController.updateUser
+  ) // API to update User sending a id by parameter (id)
   .delete(authController.restrictTo(0), userController.deleteUser); // API to delete User sending a id by parameter (id)
 
 module.exports = router;

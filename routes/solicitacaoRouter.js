@@ -42,6 +42,7 @@ router
   .get(solicitacaoController.getSolicitacao)
   .patch(
     solicitacaoController.extractFilds,
+    solicitacaoController.getEstadoById,
     solicitacaoController.updateSolicitacao
   )
   .delete(solicitacaoController.deleteSolicitacao);

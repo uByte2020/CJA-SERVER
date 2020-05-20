@@ -1,14 +1,12 @@
 [
   {
     "seguradora": "Nossa Seguro",
-    "ibans": ["1234567", "123456N"]
+    "ibans": ["1234567", "123456N"],
+    "codigoSeguradora": "NOSSASEGURO_01"
   },
   {
     "seguradora": "Sahan",
-    "ibans": ["1234567", "123456N"]
-  },
-  {
-    "seguradora": "TESTE",
-    "ibans": ["1234567", "123456N"]
+    "ibans": ["1234567", "123456N"],
+    "codigoSeguradora": "SAHAN_02"
   }
 ]

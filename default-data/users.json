@@ -9,7 +9,7 @@
     "endereco": "Teste Testing"
   },
   {
-    "name": "Teste Teste",
+    "name": "Geral CJA",
     "email": "geral@cjamediacaodeseguros.com",
     "password": "123",
     "passwordConfirm": "123",
@@ -18,8 +18,8 @@
     "endereco": "Teste Testing"
   },
   {
-    "name": "Teste Teste",
-    "email": "fiskamer@gmail.com",
+    "name": "Daniel Almeida",
+    "email": "daniel20150154@gmail.com",
     "password": "123",
     "passwordConfirm": "123",
     "role": "2",
