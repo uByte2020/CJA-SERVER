@@ -2,11 +2,14 @@
   {
     "seguradora": "Nossa Seguro",
     "ibans": ["1234567", "123456N"],
-    "codigoSeguradora": "NOSSASEGURO_01"
+    "codigoSeguradora": "NOSSASEGURO_01",
+    "isActive": true,
+    "ripple": "NS"
   },
   {
     "seguradora": "Sahan",
     "ibans": ["1234567", "123456N"],
-    "codigoSeguradora": "SAHAN_02"
+    "codigoSeguradora": "SAHAN_02",
+    "ripple": "SH"
   }
 ]

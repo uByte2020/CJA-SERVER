@@ -28,6 +28,8 @@ router
     solicitacaoController.updateSolicitacao
   );
 
+router.route('/:id').get(solicitacaoController.getSolicitacao);
+
 router.use(authController.restrictTo(0, 1));
 
 router
@@ -39,7 +41,7 @@ router
 
 router
   .route('/:id')
-  .get(solicitacaoController.getSolicitacao)
+  // .get(solicitacaoController.getSolicitacao)
   .patch(
     solicitacaoController.extractFilds,
     solicitacaoController.getEstadoById,

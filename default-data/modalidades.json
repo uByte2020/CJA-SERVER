@@ -1,11 +1,39 @@
 [
   {
-    "modalidade": "Saude"
+    "modalidade": "Saude",
+    "icon": "favorite"
   },
   {
-    "modalidade": "Automovel"
+    "modalidade": "Automovel",
+    "icon": "emoji_transportation"
   },
   {
-    "modalidade": "Viagem"
+    "modalidade": "Viagem",
+    "icon": "flight_takeoff",
+    "isActive": true
+  },
+  {
+    "modalidade": "Responsabilidade Civil Exploração",
+    "ripple": "RCE"
+  },
+  {
+    "modalidade": "Acidente de Trabalho e Doenças Profissionais",
+    "ripple": "AT"
+  },
+  {
+    "modalidade": "Multirriscos",
+    "ripple": "M"
+  },
+  {
+    "modalidade": "Equipamentos e Máquinas",
+    "ripple": "EM"
+  },
+  {
+    "modalidade": "Construção e Montagem",
+    "ripple": "CM"
+  },
+  {
+    "modalidade": "Embarcações e Aeronaves",
+    "ripple": "EA"
   }
 ]

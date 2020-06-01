@@ -17,6 +17,8 @@ router
     seguroController.createSeguro
   );
 
+router.route('/:id').get(seguroController.getSeguro);
+
 router
   .route('/:id')
   .patch(
@@ -30,7 +32,5 @@ router
 router.use(authController.restrictTo(0, 1));
 
 router.route('/').get(seguroController.getAllSeguros);
-
-router.route('/:id').get(seguroController.getSeguro);
 
 module.exports = router;

@@ -5,6 +5,7 @@ const Seguro = require('./../models/seguroModel');
 const factory = require('./handlerFactory');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
+// const APIFeatures = require('./../utils/apiFeatures');
 const ErrorMessage = require('./../utils/error');
 
 const filds = [
@@ -35,6 +36,7 @@ const upload = multer({
 
 exports.uploadSeguroDocs = upload.fields([
   { name: 'apolice', maxCount: 1 },
+  { name: 'simulacao', maxCount: 1 },
   { name: 'comprovativos', maxCount: 3 },
   { name: 'docIdentificacaos', maxCount: 10 }
 ]);
@@ -74,6 +76,11 @@ exports.validateFiles = catchAsync(async (req, res, next) => {
     req.body.apolice = files[0];
   }
 
+  if (req.files.simulacao) {
+    const files = await handlingFiles(req.files.simulacao, 'simulacao');
+    req.body.simulacao = files[0];
+  }
+
   if (req.files.comprovativos) {
     const files = await handlingFiles(req.files.comprovativos, 'comprovativos');
     req.body.comprovativos = files;
@@ -106,12 +113,28 @@ exports.extractFilds = (req, res, next) => {
 };
 
 exports.extractUpdateFilds = (req, res, next) => {
-  req.body = filterObj(req.body, 'comprovativos');
+  req.body = filterObj(
+    req.body,
+    'apolice',
+    'comprovativos',
+    'docIdentificacaos',
+    'simulacao'
+  );
   next();
 };
 
+exports.getSeguro = catchAsync(async (req, res, next) => {
+  const doc = await Seguro.findById(req.params.id);
+  res.status(200).json({
+    status: 'success',
+    data: {
+      doc
+    }
+  });
+});
+
 exports.createSeguro = factory.createOne(Seguro);
-exports.getSeguro = factory.getOne(Seguro);
+// exports.getSeguro = factory.getOne(Seguro);
 exports.getAllSeguros = factory.getAll(Seguro);
 exports.updateSeguro = factory.updateOne(Seguro);
 exports.deleteSeguro = factory.deleteOne(Seguro);

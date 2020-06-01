@@ -36,7 +36,7 @@ const seguroViagemSchema = new mongoose.Schema({
 });
 
 seguroViagemSchema.pre(/^find/, async function(next) {
-  this.populate({ path: 'seguro' });
+  // this.populate({ path: 'seguro' });
   next();
 });
 

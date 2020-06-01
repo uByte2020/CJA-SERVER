@@ -1,10 +1,13 @@
 const express = require('express');
 const seguroViagemController = require('../controllers/seguroViagemController');
+// const planoRouter = require('./planoRouter')
 const authController = require('../controllers/authController');
 
 const router = express.Router({ mergeParams: true });
 
 router.route('/simular').post(seguroViagemController.simular);
+// router.use('/viagens', planoRouter);
+router.route('/planos').get(seguroViagemController.getPlanos);
 
 router.use(authController.protect);
 

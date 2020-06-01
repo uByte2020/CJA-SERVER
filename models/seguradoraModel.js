@@ -26,6 +26,22 @@ const seguradoraSchema = new mongoose.Schema({
     ],
     default: []
   },
+  icon: {
+    type: String,
+    default: ''
+  },
+  img: {
+    type: String,
+    default: ''
+  },
+  ripple: {
+    type: String,
+    default: ''
+  },
+  isActive: {
+    type: Boolean,
+    default: false
+  },
   createdAt: {
     type: Date,
     default: Date.now(),
@@ -34,7 +50,7 @@ const seguradoraSchema = new mongoose.Schema({
 });
 
 seguradoraSchema.pre(/^find/, async function(next) {
-  this.populate({ path: 'modalidades', select: '_id modalidade' });
+  this.populate({ path: 'modalidades', select: '_id modalidade isActive' });
   next();
 });
 

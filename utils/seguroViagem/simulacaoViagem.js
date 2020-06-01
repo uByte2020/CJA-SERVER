@@ -2,7 +2,7 @@ const Planos = require('./planos');
 const AppError = require('./../appError');
 
 const SEGURADORA = {
-  NOSSA_SEGURO: 'TESTE' //TODO:
+  NOSSA_SEGURO: 'NOSSASEGURO_01' //TODO:
 };
 
 class SimulacaoViagem {
@@ -55,8 +55,10 @@ class SimulacaoViagem {
       const keys = Object.keys(Plano);
       const precos = [];
       keys.forEach(key => {
-        const preco = {};
-        preco[key] = (Plano[key][index] * pessoas).toFixed(2);
+        const preco = {
+          key: key,
+          value: (Plano[key][index] * pessoas).toFixed(2)
+        };
         precos.push(preco);
       });
 

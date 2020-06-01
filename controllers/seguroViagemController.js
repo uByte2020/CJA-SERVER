@@ -5,6 +5,7 @@ const factory = require('./handlerFactory');
 const SeguroViagem = require('../models/seguroViagemModel');
 const AppError = require('../utils/appError');
 const SimulacaoViagem = require('../utils/seguroViagem/simulacaoViagem');
+const SimulacaoViagemPlanos = require('../utils/seguroViagem/planos');
 const catchAsync = require('../utils/catchAsync');
 const ErrorMessage = require('./../utils/error');
 
@@ -84,7 +85,7 @@ exports.getPlanos = (req, res, next) => {
   res.status(200).json({
     status: 'success',
     data: {
-      doc: SeguroViagem.getPlanos().planos
+      docs: SimulacaoViagemPlanos.getPlanos()
     }
   });
 };

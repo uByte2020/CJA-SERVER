@@ -95,8 +95,7 @@ const userSchema = new mongoose.Schema({
   },
   isBloqued: {
     type: Boolean,
-    default: false,
-    select: false
+    default: false
   },
   createdAt: {
     type: Date,
