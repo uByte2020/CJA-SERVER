@@ -1,12 +1,11 @@
 const multer = require('multer');
-const sharp = require('sharp');
-const fs = require('fs');
 const Seguro = require('./../models/seguroModel');
 const factory = require('./handlerFactory');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
-// const APIFeatures = require('./../utils/apiFeatures');
 const ErrorMessage = require('./../utils/error');
+// const APIFeatures = require('./../utils/apiFeatures');
+// const sharp = require('sharp');
 
 const filds = [
   'tipo',
@@ -21,7 +20,16 @@ const filds = [
   'sinistros'
 ];
 
-const multerStorage = multer.memoryStorage();
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, `public/files/seguros/${file.fieldname}/`);
+  },
+  filename: function(req, file, cb) {
+    let type = 'pdf';
+    if (file.mimetype.startsWith('image')) type = 'jpeg';
+    cb(null, `seguro-${file.fieldname}-${Date.now()}.${type}`);
+  }
+});
 
 const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('image') || file.mimetype === 'application/pdf')
@@ -30,7 +38,7 @@ const multerFilter = (req, file, cb) => {
 };
 
 const upload = multer({
-  storage: multerStorage,
+  storage: storage,
   fileFilter: multerFilter
 });
 
@@ -41,57 +49,25 @@ exports.uploadSeguroDocs = upload.fields([
   { name: 'docIdentificacaos', maxCount: 10 }
 ]);
 
-const handlingFiles = async (files, type) => {
-  const fileNames = [];
-
-  await Promise.all(
-    files.map(async (file, i) => {
-      if (file.mimetype.startsWith('image')) {
-        const filename = `seguro-${type}-${Date.now()}-${i}.jpeg`;
-
-        await sharp(file.buffer)
-          .resize(2000, 1333)
-          .toFormat('jpeg')
-          .jpeg({ quality: 90 })
-          .toFile(`public/files/seguros/${type}/${filename}`);
-
-        fileNames.push(filename);
-      } else if (file.mimetype === 'application/pdf') {
-        const filename = `seguro-${type}-${Date.now()}-${i}.pdf`;
-
-        fs.writeFileSync(`public/files/seguros/${type}/${filename}`, file);
-
-        fileNames.push(filename);
-      }
-    })
-  );
-  return fileNames;
-};
-
 exports.validateFiles = catchAsync(async (req, res, next) => {
   if (!req.files) return next();
 
   if (req.files.apolice) {
-    const files = await handlingFiles(req.files.apolice, 'apolice');
-    req.body.apolice = files[0];
+    req.body.apolice = req.files.apolice[0].filename;
   }
 
   if (req.files.simulacao) {
-    const files = await handlingFiles(req.files.simulacao, 'simulacao');
-    req.body.simulacao = files[0];
+    req.body.simulacao = req.files.simulacao[0].filename;
   }
 
   if (req.files.comprovativos) {
-    const files = await handlingFiles(req.files.comprovativos, 'comprovativos');
-    req.body.comprovativos = files;
+    req.body.comprovativos = req.files.comprovativos.map(el => el.filename);
   }
 
   if (req.files.docIdentificacaos) {
-    const files = await handlingFiles(
-      req.files.docIdentificacaos,
-      'docIdentificacaos'
+    req.body.docIdentificacaos = req.files.docIdentificacaos.map(
+      el => el.filename
     );
-    req.body.docIdentificacaos = files;
   }
 
   next();
@@ -134,16 +110,6 @@ exports.getSeguro = catchAsync(async (req, res, next) => {
 });
 
 exports.createSeguro = factory.createOne(Seguro);
-// exports.getSeguro = factory.getOne(Seguro);
 exports.getAllSeguros = factory.getAll(Seguro);
 exports.updateSeguro = factory.updateOne(Seguro);
 exports.deleteSeguro = factory.deleteOne(Seguro);
-
-// const isRequiredFields = (obj, ...reqFields) => {
-//   const fildObj = Object.keys(obj);
-
-//   reqFields.forEach(el => {
-//     if (!fildObj.includes(el)) return false;
-//   });
-//   return true;
-// };
