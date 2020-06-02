@@ -47,7 +47,7 @@ exports.extractFilds = (req, res, next) => {
 };
 
 exports.getEstadoById = catchAsync(async (req, res, next) => {
-  if (!req.body.estado) {
+  if (req.body.estado) {
     // eslint-disable-next-line no-restricted-globals
     if (!isNaN(req.body.estado)) {
       req.body.estado = await Estado.findOne({
