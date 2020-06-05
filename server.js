@@ -22,7 +22,7 @@ mongoose
   .catch(err => console.log('Error: ', err));
 
 // Definiçã da porta
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 
 // Criação de um Listner para ouvir as rquisições do utilizador.
 const server = app.listen(port, () => {});

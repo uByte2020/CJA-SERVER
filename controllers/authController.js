@@ -85,6 +85,13 @@ exports.login = catchAsync(async (req, res, next) => {
 
   if (!user || !(await user.correctPassword(password, user.password)))
     return next(new AppError(ErrorMessage[4].message, 400));
+  if (user.isBloqued)
+    return next(
+      new AppError(
+        'Utilizador Bloqueado! Entre em contacto com Administrador',
+        500
+      )
+    );
   factory.createLogs(user._id, User, user, null, 'Login');
   createSendToken(user, 200, res);
 });

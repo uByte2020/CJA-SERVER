@@ -30,6 +30,15 @@ router
 
 router.route('/:id').get(solicitacaoController.getSolicitacao);
 
+router
+  .route('/cancelar/:id')
+  // .get(solicitacaoController.getSolicitacao)
+  .patch(
+    solicitacaoController.extractFilds,
+    solicitacaoController.getEstadoById,
+    solicitacaoController.updateSolicitacao
+  );
+
 router.use(authController.restrictTo(0, 1));
 
 router
