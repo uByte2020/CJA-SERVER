@@ -42,8 +42,7 @@ const seguroSchema = new mongoose.Schema(
       default: 0
     },
     seguradora: {
-      type: Object,
-      required: true
+      type: Object
     },
     sinistros: {
       type: mongoose.Schema.ObjectId,
@@ -77,8 +76,8 @@ seguroSchema.pre('save', async function(next) {
   this.seguradora = await seguradora.findById(this.seguradora);
   this.modalidade = await modalidade.findById(this.modalidade);
 
-  if (!this.seguradora)
-    return next(new AppError(ErrorMessage[21].message, 400));
+  // if (!this.seguradora)
+  //   return next(new AppError(ErrorMessage[21].message, 400));
   if (!this.modalidade)
     return next(new AppError(ErrorMessage[23].message, 400));
 

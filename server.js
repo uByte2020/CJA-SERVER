@@ -9,15 +9,22 @@ dotenv.config({ path: './config.env' });
 
 const app = require('./app');
 
-const DB = process.env.DATABASE_LOCAL;
+// const DB = process.env.DATABASE_LOCAL;
+const DB = process.env.DATABASE_REMOTE;
 
 mongoose
-  .connect(DB, {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
-    useUnifiedTopology: true
-  })
+  .connect(
+    DB.replace('<DBUSR>', process.env.DATABASE_USR)
+      .replace('<PASSWORD>', process.env.DATABASE_PWD)
+      .replace('<HOST>', process.env.DATABASE_HOST)
+      .replace('<DBNAME>', process.env.DATABASE_NAME),
+    {
+      useNewUrlParser: true,
+      useCreateIndex: true,
+      useFindAndModify: false,
+      useUnifiedTopology: true
+    }
+  )
   .then(() => console.log('DB connect succefully'))
   .catch(err => console.log('Error: ', err));
 
