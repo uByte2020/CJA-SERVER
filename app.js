@@ -67,6 +67,10 @@ app.use('/api/v1/seguradoras', seguradoraRouter);
 app.use('/api/v1/modalidades', modalidadeRouter);
 // app.use('/api/v1/logs', logsRouter);
 
+app.get('/', function(req, res){
+  res.redirect('/');
+});
+
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });

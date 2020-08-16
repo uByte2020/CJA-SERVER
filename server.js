@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
@@ -9,8 +10,12 @@ dotenv.config({ path: './config.env' });
 
 const app = require('./app');
 
-// const DB = process.env.DATABASE_LOCAL;
-const DB = process.env.DATABASE_REMOTE;
+let DB = '';
+
+if(process.env.NODE_ENV === 'development')
+   DB = process.env.DATABASE_LOCAL;
+else
+   DB = process.env.DATABASE_REMOTE;
 
 mongoose
   .connect(
@@ -33,9 +38,9 @@ const port = process.env.PORT || 3000;
 
 // Criação de um Listner para ouvir as rquisições do utilizador.
 const server = app.listen(port, () => {});
-
+/*
 process.on('unhandledRejection', err => {
   server.close(() => {
     process.exit(1);
   });
-});
+});*/

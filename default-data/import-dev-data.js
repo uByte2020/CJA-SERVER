@@ -9,13 +9,18 @@ const Modalidade = require('./../models/modalidadeModel');
 
 dotenv.config({ path: './config.env' });
 
-// const DB = process.env.DATABASE_REMOTE
-//             .replace('<PASSWORD>',  process.env.DATABASE_PWD)
-//             .replace('<DBUSR>',     process.env.DATABASE_USR)
-//             .replace('<HOST>',      process.env.DATABASE_HOST)
-//             .replace('<DBNAME>',    process.env.DATABASE_NAME);
+let DB = '';
 
-const DB = process.env.DATABASE_LOCAL;
+if(process.env.NODE_ENV === 'development')
+   DB = process.env.DATABASE_LOCAL;
+else
+  DB = process.env.DATABASE_REMOTE
+             .replace('<PASSWORD>',  process.env.DATABASE_PWD)
+             .replace('<DBUSR>',     process.env.DATABASE_USR)
+             .replace('<HOST>',      process.env.DATABASE_HOST)
+             .replace('<DBNAME>',    process.env.DATABASE_NAME);
+
+//const DB = process.env.DATABASE_LOCAL;
 
 mongoose
   .connect(DB, {

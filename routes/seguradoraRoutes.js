@@ -1,5 +1,5 @@
 const express = require('express');
-const seguradoraController = require('./../controllers/seguradoraController');
+const seguradoraController = require('./../controllers/SeguradoraController');
 const authController = require('../controllers/authController');
 
 const router = express.Router();
