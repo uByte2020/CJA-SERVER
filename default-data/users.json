@@ -1,7 +1,7 @@
 [
   {
     "name": "Admin",
-    "email": "admin@cjamediacaodeseguros.com",
+    "email": "admin@cjaseguros.com",
     "password": "123",
     "passwordConfirm": "123",
     "role": "0",
@@ -10,7 +10,7 @@
   },
   {
     "name": "Geral CJA",
-    "email": "geral@cjamediacaodeseguros.com",
+    "email": "geral@cjaseguros.com",
     "password": "123",
     "passwordConfirm": "123",
     "role": "1",

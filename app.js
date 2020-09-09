@@ -23,10 +23,18 @@ const app = express();
 
 app.use(helmet());
 app.use(
-  cors({
-    origin: process.env.CLIENTE_SERVER,
-    credentials: true
-  })
+  cors(
+    // {
+    //   origin: process.env.CLIENTE_SERVER,
+    //   credentials: true
+    // }
+    {
+      "origin": "*",
+      "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+      "preflightContinue": false,
+      "optionsSuccessStatus": 204
+    }
+  )
 );
 
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
@@ -66,10 +74,12 @@ app.use('/api/v1/solicitacoes', solicitacaoRouter);
 app.use('/api/v1/seguradoras', seguradoraRouter);
 app.use('/api/v1/modalidades', modalidadeRouter);
 // app.use('/api/v1/logs', logsRouter);
+if(process.env.NODE_ENV === 'production'){
+  app.get(/.*/, (req, res)=>{
+    res.sendFile(`${__dirname}/public/index.html`);
+  });
+}
 
-app.get('/', function(req, res){
-  res.redirect('/');
-});
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));

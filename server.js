@@ -15,14 +15,15 @@ let DB = '';
 if(process.env.NODE_ENV === 'development')
    DB = process.env.DATABASE_LOCAL;
 else
-   DB = process.env.DATABASE_REMOTE;
+   DB = process.env.DATABASE_REMOTE
+                  .replace('<DBUSR>', process.env.DATABASE_USR)
+                  .replace('<PASSWORD>', process.env.DATABASE_PWD)
+                  .replace('<HOST>', process.env.DATABASE_HOST)
+                  .replace('<DBNAME>', process.env.DATABASE_NAME);
 
 mongoose
   .connect(
-    DB.replace('<DBUSR>', process.env.DATABASE_USR)
-      .replace('<PASSWORD>', process.env.DATABASE_PWD)
-      .replace('<HOST>', process.env.DATABASE_HOST)
-      .replace('<DBNAME>', process.env.DATABASE_NAME),
+    DB,
     {
       useNewUrlParser: true,
       useCreateIndex: true,
