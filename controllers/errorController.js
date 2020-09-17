@@ -39,13 +39,21 @@ const sendErrorProd = (err, res) => {
   if (err.isOperational) {
     res.status(err.statusCode).json({
       status: err.status,
-      message: err.message
+      error: err,
+      message: err.message,
+      stack: err.stack
     });
   } else {
-    res.status(500).json({
-      status: 'error',
-      message: 'Somithing went worng!'
+    res.status(err.statusCode).json({
+      status: err.status,
+      error: err,
+      message: err.message,
+      stack: err.stack
     });
+    // res.status(500).json({
+    //   status: 'error',
+    //   message: 'Somithing went worng!'
+    // });
   }
 };
 
