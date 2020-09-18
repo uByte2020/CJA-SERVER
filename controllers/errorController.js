@@ -44,16 +44,16 @@ const sendErrorProd = (err, res) => {
       stack: err.stack
     });
   } else {
-    // res.status(err.statusCode).json({
-    //   status: err.status,
-    //   error: err,
-    //   message: err.message,
-    //   stack: err.stack
-    // });
-    res.status(500).json({
-      status: 'error',
-      message: 'Somithing went worng!'
+    res.status(err.statusCode).json({
+      status: err.status,
+      error: err,
+      message: err.message,
+      stack: err.stack
     });
+    // res.status(500).json({
+    //   status: 'error',
+    //   message: 'Somithing went worng!'
+    // });
   }
 };
 
