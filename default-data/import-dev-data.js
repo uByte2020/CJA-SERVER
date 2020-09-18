@@ -20,8 +20,6 @@ else
              .replace('<HOST>',      process.env.DATABASE_HOST)
              .replace('<DBNAME>',    process.env.DATABASE_NAME);
 
-//const DB = process.env.DATABASE_LOCAL;
-
 mongoose
   .connect(DB, {
     useNewUrlParser: true,
@@ -51,8 +49,13 @@ const modalidades = JSON.parse(
 const importData = async () => {
   try {
     await Estado.create(estados);
+    const modalidadesResult = await Modalidade.create(modalidades);
+
+    seguradoras.forEach(el => {
+      el.modalidades = modalidadesResult.map(el=>el._id);
+    });
+
     await Seguradora.create(seguradoras);
-    await Modalidade.create(modalidades);
     await Perfil.create(perfis);
     await User.create(users, { validateBeforeSave: false });
 

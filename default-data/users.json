@@ -2,8 +2,8 @@
   {
     "name": "Admin",
     "email": "admin@cjaseguros.com",
-    "password": "123",
-    "passwordConfirm": "123",
+    "password": "cjaseguros2020",
+    "passwordConfirm": "cjaseguros2020",
     "role": "0",
     "telemovel": "+244923235289",
     "endereco": "Teste Testing"
@@ -11,8 +11,8 @@
   {
     "name": "Geral CJA",
     "email": "geral@cjaseguros.com",
-    "password": "123",
-    "passwordConfirm": "123",
+    "password": "cjaseguros2020",
+    "passwordConfirm": "cjaseguros2020",
     "role": "1",
     "telemovel": "+244919999992",
     "endereco": "Teste Testing"
