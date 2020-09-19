@@ -56,7 +56,8 @@ exports.siginup = catchAsync(async (req, res, next) => {
     passwordConfirm: req.body.passwordConfirm,
     role: req.body.role, //perfilCode
     telemovel: req.body.telemovel,
-    endereco: req.body.endereco
+    endereco: req.body.endereco,
+    isBloqued: req.body.isBloqued || false,
   });
 
   // 3) Send it to user's email
