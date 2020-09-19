@@ -90,7 +90,7 @@ exports.login = catchAsync(async (req, res, next) => {
     return next(
       new AppError(
         'Utilizador Bloqueado! Entre em contacto com Administrador',
-        500
+        401
       )
     );
   factory.createLogs(user._id, User, user, null, 'Login');
