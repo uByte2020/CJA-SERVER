@@ -29,10 +29,11 @@ app.use(
     //   credentials: true
     // }
     {
-      "origin": "*",
-      "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-      "preflightContinue": false,
-      "optionsSuccessStatus": 204
+      origin: "*",
+      credentials: true,
+      methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+      preflightContinue: false,
+      optionsSuccessStatus: 204
     }
   )
 );
