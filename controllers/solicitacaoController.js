@@ -50,6 +50,8 @@ exports.getEstadoById = catchAsync(async (req, res, next) => {
   if (req.body.estado) {
     // eslint-disable-next-line no-restricted-globals
     if (!isNaN(req.body.estado)) {
+      if (req.body.estado === 1)
+        req.body.validAt = Date.now() + 365 * 24 * 3600 * 1000;
       req.body.estado = await Estado.findOne({
         estadoCode: { $eq: req.body.estado }
       });

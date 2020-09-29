@@ -50,7 +50,10 @@ const seguradoraSchema = new mongoose.Schema({
 });
 
 seguradoraSchema.pre(/^find/, async function(next) {
-  this.populate({ path: 'modalidades', select: '_id modalidade isActive' });
+  this.populate({
+    path: 'modalidades',
+    select: '_id modalidade isActive isAutomatic'
+  });
   next();
 });
 

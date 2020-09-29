@@ -24,7 +24,11 @@
     "ripple": "AT"
   },
   {
-    "modalidade": "Multirriscos",
+    "modalidade": "Multirrisco Estabelecimento",
+    "ripple": "M"
+  },
+  {
+    "modalidade": "Multirrisco Industria",
     "ripple": "M"
   },
   {
@@ -32,7 +36,7 @@
     "ripple": "EM"
   },
   {
-    "modalidade": "Construção e Montagem",
+    "modalidade": "Construção e Montagem - Construction All Risk",
     "ripple": "CM"
   },
   {

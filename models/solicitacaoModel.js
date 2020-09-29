@@ -35,7 +35,8 @@ const solicitacaoSchema = new mongoose.Schema({
     type: Date
   },
   validAt: {
-    type: Date
+    type: Date,
+    default: null
   },
   isActive: {
     type: Boolean,
@@ -44,7 +45,7 @@ const solicitacaoSchema = new mongoose.Schema({
 });
 
 solicitacaoSchema.pre('save', async function(next) {
-  this.validAt = Date.now() + 365 * 24 * 3600 * 1000;
+  // this.validAt = Date.now() + 365 * 24 * 3600 * 1000;
   this.estado = await Estado.findOne({ estadoCode: { $eq: this.estado } });
   if (!this.estado) return next(new AppError(ErrorMessage[17].message, 500));
   next();

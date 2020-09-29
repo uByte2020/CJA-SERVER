@@ -1,6 +1,6 @@
 [
   {
-    "seguradora": "Nossa Seguro",
+    "seguradora": "Nossa Seguros",
     "ibans": ["1234567", "123456N"],
     "codigoSeguradora": "NOSSASEGURO_01",
     "isActive": true,
