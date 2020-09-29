@@ -1,16 +1,19 @@
 [
   {
     "modalidade": "Saude",
-    "icon": "favorite"
+    "icon": "favorite",
+    "isActive": true
   },
   {
-    "modalidade": "Automovel",
-    "icon": "emoji_transportation"
+    "modalidade": "Automovel e Motociclo",
+    "icon": "emoji_transportation",
+    "isActive": true
   },
   {
     "modalidade": "Viagem",
     "icon": "flight_takeoff",
-    "isActive": true
+    "isActive": true,
+    "isAutomatic": true
   },
   {
     "modalidade": "Responsabilidade Civil Exploração",
@@ -25,7 +28,7 @@
     "ripple": "M"
   },
   {
-    "modalidade": "Equipamentos e Máquinas",
+    "modalidade": "Máquinas e Equipamentos",
     "ripple": "EM"
   },
   {
@@ -34,6 +37,7 @@
   },
   {
     "modalidade": "Embarcações e Aeronaves",
-    "ripple": "EA"
+    "ripple": "EA",
+    "isActive": true
   }
 ]

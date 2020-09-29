@@ -11,5 +11,23 @@
     "ibans": ["1234567", "123456N"],
     "codigoSeguradora": "SAHAN_02",
     "ripple": "SH"
+  },
+  {
+    "seguradora": "Bic Seguros",
+    "ibans": ["1234567", "123456N"],
+    "codigoSeguradora": "BICSEGUROS_03",
+    "ripple": "BS"
+  },
+  {
+    "seguradora": "Fidelidade Seguros",
+    "ibans": ["1234567", "123456N"],
+    "codigoSeguradora": "FIDELIDADESEGUROS_04",
+    "ripple": "FS"
+  },
+  {
+    "seguradora": "Global Seguros",
+    "ibans": ["1234567", "123456N"],
+    "codigoSeguradora": "GLOBALSEGUROS_05",
+    "ripple": "GS"
   }
 ]
