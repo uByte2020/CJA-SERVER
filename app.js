@@ -29,7 +29,7 @@ app.use(
     //   credentials: true
     // }
     {
-      origin: "*",
+      origin: process.env.CLIENTE_SERVER,
       credentials: true,
       methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
       preflightContinue: false,
