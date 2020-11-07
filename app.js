@@ -29,7 +29,7 @@ app.use(
     //   credentials: true
     // }
     {
-      origin: process.env.CLIENTE_SERVER,
+      origin: process.env.NODE_ENV === 'development' ? process.env.CLIENTE_SERVER:process.env.CLIENTE_SERVER_PRD,
       credentials: true,
       methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
       preflightContinue: false,
